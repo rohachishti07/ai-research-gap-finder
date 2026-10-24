@@ -11,7 +11,7 @@ app.secret_key = os.environ["FLASK_SECRET_KEY"]
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
 # Change the model in .env if Google retires it or you hit its daily quota
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL") or "gemini-3.5-flash"
 
 PAYPAL_BASE = "https://api-m.sandbox.paypal.com"  # sandbox only (fake money)
 CLIENT_ID = os.environ["PAYPAL_CLIENT_ID"]
