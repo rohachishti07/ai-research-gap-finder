@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Research Gap Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>AI Research Gap Finder</h1>
+
+        <p class="counter">
+            {{ used }} / {{ limit }} researches used {% if premium %}(Premium){% endif %}
+        </p>
+
+        <form method="POST">
+            <input type="text" name="topic" value="{{ topic }}"
+                placeholder="Mathematics and Artificial Intelligence" required>
+            <button type="submit">Generate Ideas</button>
+        </form>
+
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if topic and not error %}
+        <div class="topic-box">
+            <h2>Your Topic:</h2>
+            <p><strong>{{ topic }}</strong></p>
+        </div>
+        {% endif %}
+
+        {% if result %}
+        <div class="grid">
+            <div class="card">
+                <h3>Research Gaps:</h3>
+                <ul>{% for item in research_gaps %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+
+            <div class="card">
+                <h3>Thesis Topics:</h3>
+                <ul>{% for item in thesis_topics %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+
+            <div class="card">
+                <h3>Future Trends:</h3>
+                <ul>{% for item in future_trends %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+
+            <div class="card">
+                <h3>Research Questions:</h3>
+                <ul>{% for item in research_questions %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not premium %}
+        <div class="upgrade">
+            <h3>Upgrade to Premium: $5 for 10 researches</h3>
+            <div id="paypal-button-container"></div>
+        </div>
+
+        <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD"></script>
+        <script>
+            paypal.Buttons({
+                createOrder: () => fetch("/create-order", { method: "POST" })
+                    .then(r => r.json()).then(d => d.id),
+                onApprove: (data) => fetch("/capture-order/" + data.orderID, { method: "POST" })
+                    .then(r => r.json()).then(() => location.reload())
+            }).render("#paypal-button-container");
+        </script>
+        {% endif %}
+
+    </div>
+</body>
+
+</html>
