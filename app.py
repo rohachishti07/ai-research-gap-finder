@@ -11,7 +11,7 @@ app.secret_key = os.environ["FLASK_SECRET_KEY"]
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
 # Change the model in .env if Google retires it or you hit its daily quota
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL") or "gemini-3.5-flash"
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL") or "gemini-3.8-flash"
 
 PAYPAL_BASE = "https://api-m.sandbox.paypal.com"  # sandbox only (fake money)
 CLIENT_ID = os.environ["PAYPAL_CLIENT_ID"]
@@ -48,7 +48,7 @@ def parse_sections(text):
         if heading in keys:
             current = keys[heading]
         elif current:
-            sections[current].append(line.lstrip("-• ").strip())
+            sections[current].append(re.sub(r"^[-•\s]*(\d+[.)]\s*)?", "", line).strip())
     return sections
 
 
@@ -143,3 +143,6 @@ if os.environ.get("ENABLE_RESET") == "1":
 if __name__ == "__main__":
     # Debug mode lets anyone run code through the error page, so keep it off by default
     app.run(debug=os.environ.get("FLASK_DEBUG") == "1")
+
+
+   
